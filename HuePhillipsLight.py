@@ -3,7 +3,6 @@ class HuePhillipsLight:
     def __init__(self, light):
         self.light = light
 
-    #These are properties. they are recalculated each time to ensure the correct value
     @property
     def lightDict(self):
         return self.light()
@@ -11,7 +10,11 @@ class HuePhillipsLight:
     @property
     def isOn(self):
         return self.lightDict['state']['on']
-        
+
+    @isOn.setter
+    def isOn(self, setting):
+        self.light.state(on=setting)
+
     @property
     def brightness(self):
         return self.lightDict['state']['bri']
@@ -42,27 +45,16 @@ class HuePhillipsLight:
 
     @property
     def productname(self):
-        return self.lightDict['name']
-
-    def turnOn(self):
-        self.light.state(on=True)
-
-    def turnOff(self):
-        self.light.state(on=False)
+        return self.lightDict['productname']
 
     def toggle(self):
-        self.light.state(on=(not self.isOn))
+        self.isOn = (not self.isOn)
 
     def startColorLoop(self):
         self.light.state(effect='colorloop')
 
+    def stopColorLoop(self):
+        self.light.state(effect='none')
+
     def setMaxBrightness(self):
-        self.brightness = 255
-
-
-
-
-
-
-
-
+        self.brightness = 254

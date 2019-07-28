@@ -1,31 +1,30 @@
-#qhue is used to help construct urls for communicating with bridge
+# qhue is used to help construct urls for communicating with bridge
 from qhue import Bridge
 
-#PyQt5 is currently being used
+# PyQt5 is currently being used
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot
 
-#used for dealing with color conversions
-from colors import * #custom list of values for main colors
+# used for dealing with color conversions
+from colors import *  # custom list of values for main colors
 import colorsys
 
-#Custom Classes
+# Custom Classes
 from HuePhillipsLight import HuePhillipsLight
 
-#setup Hue Phillips brige by adding your IP and username
-#visit the Hue Phillips API to obtain these
+# setup Hue Phillips brige by adding your IP and username
+# visit the Hue Phillips API to obtain these
 BRIDGE_IP = "192.168.1.223"
 USERNAME = "ySNf3BZsEWqPgcGTg0Vtw9WS4eYEmPV0YMVN2HSU"
-
 
 LIGHT_CHECKBOX_ORDER = 0
 LIGHT_BRIGHTNESS_SLIDER_ORDER = 1
 LIGHT_COLOR_DIALOG_BUTTON_ORDER = 2
 
 
-
-class Ui_MainWindow( QObject ):
+class Ui_MainWindow(QObject):
     def __init__(self):
+        super().__init__()
         self.widgetToLight = {}
         self.bridge = Bridge(BRIDGE_IP, USERNAME)
 
@@ -47,9 +46,6 @@ class Ui_MainWindow( QObject ):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         MainWindow.setStatusBar(self.statusbar)
 
-
-
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -58,8 +54,7 @@ class Ui_MainWindow( QObject ):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.HuePhillipsGroupBox.setTitle(_translate("MainWindow", "Hue Phillips"))
 
-
-# Setting up the UI
+    # Setting up the UI
 
     def setupHuePhillipsWidgets(self):
         for group in self.bridge()['groups'].keys():
@@ -70,12 +65,10 @@ class Ui_MainWindow( QObject ):
             self.groupBoxLayout.addWidget(groupBox)
 
     def createLightWidgets(self, groupBox, row, light):
-        #The order for these variables can be adjusted at the top
+        # The order for these variables can be adjusted at the top
         self.createLightCheckBox(groupBox, row, LIGHT_CHECKBOX_ORDER, light)
-        self.createLightBrightnessSlider(groupBox,row, LIGHT_BRIGHTNESS_SLIDER_ORDER, light)
+        self.createLightBrightnessSlider(groupBox, row, LIGHT_BRIGHTNESS_SLIDER_ORDER, light)
         self.createColorDialogButton(groupBox, row, LIGHT_COLOR_DIALOG_BUTTON_ORDER, light)
-
-
 
     def createLightCheckBox(self, groupBox, row, col, light):
         checkBox = QtWidgets.QCheckBox(groupBox)
@@ -104,14 +97,11 @@ class Ui_MainWindow( QObject ):
         self.widgetToLight[button] = light
         groupBox.layout().addWidget(button, row, 2, 1, 1)
 
-
-
-# Slots connected to widget signals
+    # Slots connected to widget signals
 
     @pyqtSlot()
     def toggleLight(self):
         self.widgetToLight[self.sender()].toggle()
-
 
     @pyqtSlot(int)
     def changeBrightness(self, bri):
@@ -133,12 +123,9 @@ class Ui_MainWindow( QObject ):
         print(color.hue())
 
 
-
-
-
-
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
